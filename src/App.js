@@ -1,25 +1,66 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useState } from "react";
+import './App.css'
+import DataItem from "./DataItem";
 
-function App() {
-  return (
+export default function App(){
+  
+  const [inputValue, setInputValue] = useState('');
+  const [dataItems, setDataItems] = useState([]);
+
+  const handleInputChange = (e) =>{
+    setInputValue(e.target.value);
+  }
+
+  const handleAppItem = (e) =>{
+    if(inputValue.trim()!== ""){
+      setDataItems([...dataItems, inputValue]);
+      setInputValue("")
+    }
+  }
+
+  const handleDeleteItem = (title) => {
+    const updateitems = dataItems.filter((item) => item !==title);
+    setDataItems(updateitems);
+  }
+  
+
+  const handleKeyDown = (event) => {
+    if (event.key === 'Enter') {
+      handleAppItem();
+    }
+  };
+
+  return <>
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
-}
+      <div className="all_container">
 
-export default App;
+        <div className="input_and_button_container">
+          <input 
+          type="text" 
+          placeholder="Add items"
+          value={inputValue}
+          onChange={handleInputChange}
+          onKeyDown={handleKeyDown}
+          />
+          <button id="add_items" onClick={handleAppItem}>+</button>
+        </div>
+
+        <div className="data_container">
+          <h2>TODO</h2>
+          <hr/>
+          <div className="data_items_container">
+            {dataItems.map((title, index) => (
+              <DataItem 
+              key = {index} 
+              title = {title}
+              onDelete = {handleDeleteItem}
+              />
+            ))}
+          </div>
+          
+        </div>
+
+      </div>
+    </div>
+    </>
+}
